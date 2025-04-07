@@ -112,7 +112,7 @@ export default function Home() {
                 marginBottom: '2rem',
             }}>
                 <img
-                    src="/simpsons.jpg" // coloque sua imagem na pasta public com esse nome ou altere o caminho
+                    src="/simpsons.jpg" 
                     alt="Minha Família"
                     style={{
                         width: '200px',
