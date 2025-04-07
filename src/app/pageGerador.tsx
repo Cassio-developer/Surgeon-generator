@@ -76,7 +76,7 @@ export default function Home() {
     };
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const rawValue = e.target.value.replace(/\D/g, '').slice(0, 11); 
+        const rawValue = e.target.value.replace(/\D/g, '').slice(0, 11);
         setFormData((prev) => ({
             ...prev,
             telefone: rawValue,
@@ -88,7 +88,7 @@ export default function Home() {
     const disabled = !isFormComplete();
 
     const maskPhone = (value: string) => {
-        const digits = value.replace(/\D/g, '').slice(0, 11); 
+        const digits = value.replace(/\D/g, '').slice(0, 11);
         const match = digits.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
         if (!match) return value;
         const [, ddd, first, last] = match;
@@ -104,6 +104,30 @@ export default function Home() {
 
     return (
         <main style={{ padding: 32, maxWidth: 800, margin: '0 auto' }}>
+
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                marginBottom: '2rem',
+            }}>
+                <img
+                    src="/simpsons.jpg" // coloque sua imagem na pasta public com esse nome ou altere o caminho
+                    alt="Minha Família"
+                    style={{
+                        width: '200px',
+                        height: '200px',
+                        objectFit: 'cover',
+                        borderRadius: '100%',
+                        marginBottom: '1rem',
+                    }}
+                />
+                <p style={{ textAlign: 'center', fontSize: '1rem', color: '#444', maxWidth: '400px' }}>
+                  {"Este gerador de currículo é dedicado a vocês BBS. Fala comigo bb :) "}
+                </p>
+            </div>
+
+
             <h1>Gerador de Currículo</h1>
             <label>Foto de Perfil:</label>
             <input type="file" accept="image/*" onChange={handleImageUpload} />
