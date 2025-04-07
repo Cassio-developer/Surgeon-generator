@@ -44,6 +44,35 @@ export default function Home() {
     };
 
 
+    const isFormComplete = (): boolean => {
+        const {
+            nome,
+            email,
+            telefone,
+            resumo,
+            habilidades,
+            experiencia,
+            educacao,
+            projetos,
+            certificacoes,
+            foto,
+        } = formData;
+
+        return (
+            nome.trim() !== '' &&
+            email.trim() !== '' &&
+            telefone.trim() !== '' &&
+            resumo.trim() !== '' &&
+            habilidades.length > 0 &&
+            experiencia.trim() !== '' &&
+            educacao.trim() !== '' &&
+            projetos.trim() !== '' &&
+            certificacoes.trim() !== '' &&
+            foto?.trim() !== ''
+        );
+    };
+
+
     return (
         <main style={{ padding: 32, maxWidth: 800, margin: '0 auto' }}>
             <h1>Gerador de Currículo</h1>
@@ -84,18 +113,43 @@ export default function Home() {
             <label>Certificações:</label>
             <textarea value={formData.certificacoes} onChange={(e) => updateField('certificacoes', e.target.value)} />
 
-            <div style={{ marginTop: 20 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem' }}>
 
                 {typeof window !== 'undefined' && (
                     <PDFDownloadLink
                         document={<CurriculoPDF data={formData} />}
                         fileName="curriculo.pdf"
                     >
-                        {({  loading}) =>
-                            loading ? 'Gerando PDF...' : 'Baixar Currículo'
-                        }
+                        {({ loading }) => {
+                            const disabled = !isFormComplete();
+
+                            return (
+                                <button
+                                    disabled={disabled}
+                                    style={{
+                                        padding: '10px 20px',
+                                        fontSize: '16px',
+                                        borderRadius: '6px',
+                                        border: 'none',
+                                        cursor: disabled ? 'not-allowed' : 'pointer',
+                                        backgroundColor: disabled ? '#ccc' : '#4CAF50',
+                                        color: disabled ? '#666' : '#fff',
+                                        transition: 'background-color 0.3s ease',
+                                    }}
+                                >
+                                    {loading ? 'Gerando PDF...' : 'Baixar Currículo'}
+                                </button>
+                            );
+                        }}
+
                     </PDFDownloadLink>
                 )}
+                {!isFormComplete() && (
+                    <p style={{ color: 'red', marginTop: 8 }}>
+                        Preencha todos os campos para habilitar o download.
+                    </p>
+                )}
+
             </div>
         </main>
     );
