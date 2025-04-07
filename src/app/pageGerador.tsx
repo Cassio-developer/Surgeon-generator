@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+
+import { useState } from 'react';
+
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import CurriculoPDF, { CurriculoData } from '@/app/components/CurriculoPDF';
+
 
 export default function Home() {
     const [formData, setFormData] = useState<CurriculoData>({
@@ -72,6 +75,32 @@ export default function Home() {
         );
     };
 
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const rawValue = e.target.value.replace(/\D/g, '').slice(0, 11); 
+        setFormData((prev) => ({
+            ...prev,
+            telefone: rawValue,
+        }));
+    };
+
+
+
+    const disabled = !isFormComplete();
+
+    const maskPhone = (value: string) => {
+        const digits = value.replace(/\D/g, '').slice(0, 11); 
+        const match = digits.match(/^(\d{0,2})(\d{0,5})(\d{0,4})$/);
+        if (!match) return value;
+        const [, ddd, first, last] = match;
+        return [
+            ddd ? `(${ddd}` : '',
+            ddd && ddd.length === 2 ? ') ' : '',
+            first,
+            first && last ? '-' : '',
+            last,
+        ].join('');
+    };
+
 
     return (
         <main style={{ padding: 32, maxWidth: 800, margin: '0 auto' }}>
@@ -86,7 +115,15 @@ export default function Home() {
             <input value={formData.email} onChange={(e) => updateField('email', e.target.value)} />
 
             <label>Telefone:</label>
-            <input value={formData.telefone} onChange={(e) => updateField('telefone', e.target.value)} />
+            <input
+                type="text"
+                name="telefone"
+                value={maskPhone(formData.telefone)}
+                onChange={handlePhoneChange}
+                placeholder="(99) 99999-9999"
+                style={{ padding: '10px', fontSize: '16px', width: '100%' }}
+            />
+
 
             <label>Resumo:</label>
             <textarea value={formData.resumo} onChange={(e) => updateField('resumo', e.target.value)} />
@@ -113,35 +150,41 @@ export default function Home() {
             <label>Certificações:</label>
             <textarea value={formData.certificacoes} onChange={(e) => updateField('certificacoes', e.target.value)} />
 
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    marginTop: '2rem',
+                    width: '100%',
+                }}
+            >
 
                 {typeof window !== 'undefined' && (
                     <PDFDownloadLink
                         document={<CurriculoPDF data={formData} />}
                         fileName="curriculo.pdf"
                     >
-                        {({ loading }) => {
-                            const disabled = !isFormComplete();
-
-                            return (
-                                <button
-                                    disabled={disabled}
-                                    style={{
-                                        padding: '10px 20px',
-                                        fontSize: '16px',
-                                        borderRadius: '6px',
-                                        border: 'none',
-                                        cursor: disabled ? 'not-allowed' : 'pointer',
-                                        backgroundColor: disabled ? '#ccc' : '#4CAF50',
-                                        color: disabled ? '#666' : '#fff',
-                                        transition: 'background-color 0.3s ease',
-                                    }}
-                                >
-                                    {loading ? 'Gerando PDF...' : 'Baixar Currículo'}
-                                </button>
-                            );
-                        }}
-
+                        {({ loading }) => (
+                            <button
+                                type="submit"
+                                disabled={disabled}
+                                style={{
+                                    padding: '10px 20px',
+                                    fontSize: '16px',
+                                    borderRadius: '6px',
+                                    border: 'none',
+                                    cursor: disabled ? 'not-allowed' : 'pointer',
+                                    backgroundColor: disabled ? '#ccc' : '#4CAF50',
+                                    color: disabled ? '#666' : '#fff',
+                                    transition: 'background-color 0.3s ease',
+                                }}
+                            >
+                                {loading ? 'Gerando PDF...' : 'Baixar Currículo'}
+                            </button>
+                        )}
                     </PDFDownloadLink>
                 )}
                 {!isFormComplete() && (
@@ -149,8 +192,8 @@ export default function Home() {
                         Preencha todos os campos para habilitar o download.
                     </p>
                 )}
-
             </div>
+
         </main>
     );
 }
