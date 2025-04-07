@@ -17,7 +17,7 @@ export default function Home() {
         certificacoes: '',
     });
 
-    const updateField = (field: keyof CurriculoData, value: any) => {
+    const updateField = (field: keyof CurriculoData, value: string | string[]) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -37,10 +37,12 @@ export default function Home() {
 
         const reader = new FileReader();
         reader.onloadend = () => {
-            updateField('foto', reader.result);
+            const result = reader.result as string;
+            updateField('foto', result);
         };
         reader.readAsDataURL(file);
     };
+
 
     return (
         <main style={{ padding: 32, maxWidth: 800, margin: '0 auto' }}>
@@ -83,9 +85,17 @@ export default function Home() {
             <textarea value={formData.certificacoes} onChange={(e) => updateField('certificacoes', e.target.value)} />
 
             <div style={{ marginTop: 20 }}>
-                <PDFDownloadLink document={<CurriculoPDF data={formData} />} fileName="curriculo.pdf">
-                    {({ loading }) => (loading ? 'Gerando PDF...' : '📄 Baixar Currículo em PDF')}
-                </PDFDownloadLink>
+
+                {typeof window !== 'undefined' && (
+                    <PDFDownloadLink
+                        document={<CurriculoPDF data={formData} />}
+                        fileName="curriculo.pdf"
+                    >
+                        {({  loading}) =>
+                            loading ? 'Gerando PDF...' : 'Baixar Currículo'
+                        }
+                    </PDFDownloadLink>
+                )}
             </div>
         </main>
     );

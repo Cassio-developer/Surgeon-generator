@@ -63,6 +63,7 @@ const CurriculoPDF = ({ data }: { data: CurriculoData }) => (
           <Image
             src={data.foto}
             style={{ width: 100, height: 100, borderRadius: 50 }}
+
           />
         </View>
       )}
